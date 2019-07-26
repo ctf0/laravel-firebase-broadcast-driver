@@ -38,7 +38,7 @@ return [
    however you can check the [firebase api docs](https://firebase.google.com/docs/database/web/start) or [vuefire](https://github.com/vuejs/vuefire) if you are using `vue`, on how to listen for changes and update your app users accordingly.
 
 
-### Notification Data Sample
+#### Notification Data Sample
 ```json
 {
   "notifications" : {
