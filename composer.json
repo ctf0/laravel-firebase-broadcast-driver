@@ -1,0 +1,45 @@
+{
+    "name": "ctf0/firebase-broadcast-driver",
+    "description": "a firebase broadcast driver for laravel",
+    "homepage": "https://github.com/ctf0/laravel-firebase-broadcast-driver",
+    "license": "MIT",
+    "keywords": [
+        "ctf0",
+        "laravel",
+        "firebase",
+        "broadcast"
+    ],
+    "authors": [
+        {
+            "name": "Muah",
+            "email": "muah003@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~7.0",
+        "illuminate/support": "5.5 - 5.8",
+        "kreait/firebase-php": "*",
+        "ctf0/package-changelog": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ctf0\\Firebase\\": "src"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "ctf0\\Firebase\\FireBaseBroadcastProvider"
+            ]
+        },
+        "changeLog": "logs"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "scripts": {
+        "post-package-install": [
+            "@php artisan vendor:publish --provider=\"ctf0\\Firebase\\FireBaseBroadcastProvider\""
+        ]
+    }
+}
