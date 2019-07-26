@@ -52,9 +52,10 @@ class FireBaseBroadcaster extends Broadcaster
 
         try {
             $db->getReference(Arr::get($this->config, 'collection_name'))->push([
-                'channels' => $this->formatChannels($channels),
-                'data'     => $payload,
-                'event'    => $event,
+                'timestamp' => now()->timestamp,
+                'channels'  => $this->formatChannels($channels),
+                'data'      => $payload,
+                'event'     => $event,
             ]);
         } catch (ApiException $e) {
             throw new BroadcastException($e);
