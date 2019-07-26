@@ -18,8 +18,7 @@
     "require": {
         "php": "~7.0",
         "illuminate/support": "5.5 - 5.8",
-        "kreait/firebase-php": "*",
-        "ctf0/package-changelog": "*"
+        "kreait/firebase-php": "*"
     },
     "autoload": {
         "psr-4": {
