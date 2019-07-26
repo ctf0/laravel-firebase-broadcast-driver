@@ -52,7 +52,7 @@ class FireBaseBroadcaster extends Broadcaster
 
         try {
             $db->getReference(Arr::get($this->config, 'collection_name'))->push([
-                'timestamp' => now()->timestamp,
+                'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
                 'channels'  => $this->formatChannels($channels),
                 'data'      => $payload,
                 'event'     => $event,
