@@ -34,8 +34,8 @@ return [
 - add `BROADCAST_DRIVER=firebase` to `.env`
 
 - atm there no support for [laravel-echo](https://laravel.com/docs/5.8/broadcasting#installing-laravel-echo) "any help is appreciated" but no worries, you still get the same payload as other broadcast drivers.
-
-    but you can check the [firebase api docs](https://firebase.google.com/docs/database/web/start) or [vuefire](https://github.com/vuejs/vuefire) if you are using `vue`, on how to listen for changes and update your app users accordingly.
+   
+   however you can check the [firebase api docs](https://firebase.google.com/docs/database/web/start) or [vuefire](https://github.com/vuejs/vuefire) if you are using `vue`, on how to listen for changes and update your app users accordingly.
 
 
 ### Notification Data Sample
