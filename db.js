@@ -1,5 +1,4 @@
 import firebase from "firebase"
-import Vue from 'vue'
 
 export default firebase
     .initializeApp({
