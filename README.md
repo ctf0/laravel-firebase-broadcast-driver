@@ -20,10 +20,8 @@ return [
 
         'firebase'=> [
             'driver'=> 'firebase',
-            'apiKey'=> env('FB_API_KEY'),
             'databaseURL'=> env('FB_DB_URL'), // the real time database url
-            'projectId'=> env('FB_PROJECT_ID'),
-            'creds_file'=> env('FB_CREDENTIALS_FILE'),
+            'creds_file'=> env('FB_CREDENTIALS_FILE'), // service account json file
             'collection_name'=> env('FB_COLLECTION_NAME'), // ex.notifications
         ],
     ],
