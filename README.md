@@ -15,14 +15,15 @@
 // config/broadcasting
 
 return [
-    'connections'=> [
+    'connections' => [
         // ...
 
-        'firebase'=> [
-            'driver'=> 'firebase',
-            'databaseURL'=> env('FB_DB_URL'), // the real time database url
-            'creds_file'=> env('FB_CREDENTIALS_FILE'), // service account json file
-            'collection_name'=> env('FB_COLLECTION_NAME'), // ex.notifications
+        'firebase' => [
+            'driver' => 'firebase',
+            'type' => 'rtdb', // rtdb or fsdb
+            'databaseURL' => env('FB_DB_URL'), // the real time database url
+            'creds_file' => env('FB_CREDENTIALS_FILE'), // service account json file
+            'collection_name' => env('FB_COLLECTION_NAME'), // ex.notifications
         ],
     ],
 ];
@@ -33,24 +34,24 @@ return [
 - add `BROADCAST_DRIVER=firebase` to `.env`
 
 - atm there no support for [laravel-echo](https://laravel.com/docs/5.8/broadcasting#installing-laravel-echo) "any help is appreciated" but no worries, you still get the same payload as other broadcast drivers.
-   
-   however you can check the [firebase api docs](https://firebase.google.com/docs/database/web/start) or [vuefire](https://github.com/vuejs/vuefire) if you are using `vue`, on how to listen for changes and update your app users accordingly.
 
+    however you can check the [firebase api docs](https://firebase.google.com/docs/database/web/start) or [vuefire](https://github.com/vuejs/vuefire) if you are using `vue`, on how to listen for changes and update your app users accordingly.
 
 #### Notification Data Sample
 ```json
 {
-  "notifications" : {
-    "-LkgtAVVw0Ztwyjayd9n" : {
-      "channels" : [ "private-App.User.091b0f7e-805b-4aab-8c99-445039157783" ],
-      "data" : {
-        "body" : "some body",
-        "id" : "d54c44a2-8a42-43a4-bae0-e2b159d1533b",
-        "title" : "some title",
-        "type" : "App\\Notifications\\AlertUser"
-      },
-      "event" : "Illuminate\\Notifications\\Events\\BroadcastNotificationCreated"
-    },
-  }
+    "notifications" : {
+        "-LkgtAVVw0Ztwyjayd9n" : {
+            "channels" : [ "private-App.User.091b0f7e-805b-4aab-8c99-445039157783" ],
+            "data" : {
+                "body" : "some body",
+                "id" : "d54c44a2-8a42-43a4-bae0-e2b159d1533b",
+                "title" : "some title",
+                "type" : "App\\Notifications\\AlertUser"
+            },
+            "event" : "Illuminate\\Notifications\\Events\\BroadcastNotificationCreated",
+            "timestamp": 1564183089538
+        }
+    }
 }
 ```

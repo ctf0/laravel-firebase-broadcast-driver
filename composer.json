@@ -20,6 +20,9 @@
         "illuminate/support": "5.5 - 5.8",
         "kreait/firebase-php": "*"
     },
+    "suggest": {
+        "morrislaptop/firestore-php": "Required to use with firestore db."
+    },
     "autoload": {
         "psr-4": {
             "ctf0\\Firebase\\": "src"
@@ -38,7 +41,7 @@
     },
     "scripts": {
         "post-package-install": [
-            "@php artisan vendor:publish --provider=\"ctf0\\Firebase\\FireBaseBroadcastProvider\""
+            "@php artisan vendor:publish --provider = \"ctf0\\Firebase\\FireBaseBroadcastProvider\""
         ]
     }
 }

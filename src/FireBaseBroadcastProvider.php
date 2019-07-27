@@ -2,6 +2,8 @@
 
 namespace ctf0\Firebase;
 
+use ctf0\Firebase\Broadcasters\FSDB;
+use ctf0\Firebase\Broadcasters\RTDB;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Broadcasting\BroadcastManager;
 
@@ -13,7 +15,9 @@ class FireBaseBroadcastProvider extends ServiceProvider
     public function boot()
     {
         app(BroadcastManager::class)->extend('firebase', function ($app) {
-            return new FireBaseBroadcaster();
+            $config = config('broadcasting.connections.firebase');
+
+            return $config['type'] == 'rtdb' ? new RTDB($config) : new FSDB($config);
         });
     }
 

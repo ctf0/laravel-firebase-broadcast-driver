@@ -1,31 +1,30 @@
 <?php
 
-namespace ctf0\Firebase;
+namespace ctf0\Firebase\Broadcasters;
 
-use Illuminate\Support\Arr;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Exception\ApiException;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 
-class FireBaseBroadcaster extends Broadcaster
+class RTDB extends Broadcaster
 {
     protected $db;
     protected $config;
 
     /**
      * Create a new broadcaster instance.
+     *
+     * @param mixed $config
      */
-    public function __construct()
+    public function __construct($config)
     {
-        $this->config = config('broadcasting.connections.firebase');
-
-        $sr_account = ServiceAccount::fromJsonFile(base_path(Arr::get($this->config, 'creds_file')));
-
-        $this->db = (new Factory())
+        $sr_account   = ServiceAccount::fromJsonFile(base_path($config['creds_file']));
+        $this->config = $config;
+        $this->db     = (new Factory())
                         ->withServiceAccount($sr_account)
-                        ->withDatabaseUri(Arr::get($this->config, 'databaseURL'))
+                        ->withDatabaseUri($config['databaseURL'])
                         ->create();
     }
 
@@ -51,12 +50,13 @@ class FireBaseBroadcaster extends Broadcaster
         $db = $this->db->getDatabase();
 
         try {
-            $db->getReference(Arr::get($this->config, 'collection_name'))->push([
-                'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
-                'channels'  => $this->formatChannels($channels),
-                'data'      => $payload,
-                'event'     => $event,
-            ]);
+            $db->getReference($this->config['collection_name'])
+                ->push([
+                    'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
+                    'channels'  => $this->formatChannels($channels),
+                    'data'      => $payload,
+                    'event'     => $event,
+                ]);
         } catch (ApiException $e) {
             throw new BroadcastException($e);
         }
