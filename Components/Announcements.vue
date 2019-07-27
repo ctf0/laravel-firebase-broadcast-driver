@@ -3,23 +3,45 @@
 </template>
 
 <script>
-import db from './../db'
+import * as firebase from './../db'
 
 export default {
     data() {
         return {
-            notifications: []
+            notifications: [],
+            unsubscribe: null
         }
     },
     beforeMount() {
-        db.ref(process.env.MIX_FB_COLLECTION_NAME)
-            .orderByChild('timestamp')
-            .startAt(Date.now())
-            .on('child_added', (snapshot) => {
-                let notifs = this.notifications
+        // this.rtdb()
+        // this.fsdb()
+    },
+    beforeDestroy() {
+        unsubscribe()
+    },
+    methods: {
+        rtdb() {
+            firebase.rtdb.ref(process.env.MIX_FB_COLLECTION_NAME)
+                .orderByChild('timestamp')
+                .startAt(Date.now())
+                .on('child_added', (doc) => {
+                    this.addToNotifList(doc.val())
+                })
+        },
+        fsdb() {
+            this.unsubscribe = firebase.fsdb.collection(process.env.MIX_FB_COLLECTION_NAME)
+                .where('timestamp', '>=', Date.now())
+                .onSnapshot((docs) => {
+                    docs.forEach((doc) => {
+                        this.addToNotifList(doc.data())
+                    })
+                })
+        },
+        addToNotifList(item) {
+            let notifs = this.notifications
 
-                notifs.length ? notifs.unshift(snapshot.val()) : notifs.push(snapshot.val())
-            })
+            notifs.length ? notifs.unshift(item) : notifs.push(item)
+        }
     }
 }
 </script>
