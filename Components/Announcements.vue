@@ -12,11 +12,14 @@ export default {
         }
     },
     beforeMount() {
-        db.ref(process.env.MIX_FB_COLLECTION_NAME).orderByChild('timestamp').startAt(Date.now()).on('child_added', (snapshot) => {
-            let notifs = this.notifications
+        db.ref(process.env.MIX_FB_COLLECTION_NAME)
+            .orderByChild('timestamp')
+            .startAt(Date.now())
+            .on('child_added', (snapshot) => {
+                let notifs = this.notifications
 
-            notifs.length ? notifs.unshift(snapshot.val()) : notifs.push(snapshot.val())
-        })
+                notifs.length ? notifs.unshift(snapshot.val()) : notifs.push(snapshot.val())
+            })
     }
 }
 </script>
