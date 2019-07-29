@@ -42,7 +42,7 @@ return [
 {
     "notifications" : {
         "-LkgtAVVw0Ztwyjayd9n" : {
-            "channels" : [ "private-App.User.091b0f7e-805b-4aab-8c99-445039157783" ],
+            "channel" : "private-App.User.091b0f7e-805b-4aab-8c99-445039157783",
             "data" : {
                 "body" : "some body",
                 "id" : "d54c44a2-8a42-43a4-bae0-e2b159d1533b",
