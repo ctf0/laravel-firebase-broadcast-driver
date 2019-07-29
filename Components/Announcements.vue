@@ -73,10 +73,6 @@ export default {
             try {
                 let res = await axios.post(authUrl, {
                     'channel_name': name
-                }, {
-                    validateStatus: function (status) {
-                        return (status >= 200 && status < 300) || status == 403 // dont show unauthorized error in console
-                    }
                 })
 
                 return res.status == 200 ? true : false
