@@ -1,6 +1,4 @@
 import firebase from 'firebase/app'
-import 'firebase/firestore'
-import 'firebase/database'
 
 const fb = firebase.initializeApp({
     apiKey: process.env.MIX_FB_API_KEY,
@@ -10,8 +8,16 @@ const fb = firebase.initializeApp({
     projectId: process.env.MIX_FB_PROJECT_ID
 })
 
-// https://firebase.google.com/docs/database/web/start
-export const rtdb = fb.database()
+let connection
 
-// https://firebase.google.com/docs/firestore/quickstart
-export const fsdb = fb.firestore()
+if (process.env.MIX_FB_Type == 'firestore') {
+    require('./firebase/firestore')
+    // https://firebase.google.com/docs/firestore/quickstart
+    connection = fb.firestore()
+} else {
+    require('./firebase/database')
+    // https://firebase.google.com/docs/database/web/start
+    connection = fb.database()
+}
+
+export default connection

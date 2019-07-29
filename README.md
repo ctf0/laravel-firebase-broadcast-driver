@@ -1,5 +1,4 @@
-# Vue Setup
-
 - https://codepen.io/jorgecardoso/post/lesson-websockets-with-firebase
 - https://firebase.google.com/docs/database/web/lists-of-data
 - https://gist.github.com/katowulf/6383103
+- https://medium.com/@khreniak/cloud-firestore-security-rules-basics-fac6b6bea18e

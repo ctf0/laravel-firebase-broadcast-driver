@@ -1,46 +1,104 @@
 <template>
-    <div></div>
+    <div />
 </template>
 
 <script>
-import * as firebase from './../db'
+import db from 'js/db'
+
+const startAt = Date.now()
+const orderBy = 'timestamp'  // dont forget to index it under firebase rules
+const collectionName = process.env.MIX_FB_COLLECTION_NAME
+const authUrl = `${process.env.MIX_APP_URL}/broadcasting/auth`
 
 export default {
+    props: {
+        userId: {
+            type: String,
+            required: false,
+            default: null
+        }
+    },
     data() {
         return {
             notifications: [],
-            unsubscribe: null
+            queue: []
         }
     },
-    beforeMount() {
-        // this.rtdb()
-        // this.fsdb()
-    },
-    beforeDestroy() {
-        unsubscribe()
+    // firebase: {
+    //     queue: db.ref(collectionName)
+    //         .orderByChild(orderBy)
+    //         .startAt(startAt)
+    // },
+    firestore: {
+        queue: db.collection(collectionName)
+            .where(orderBy, '>=', startAt)
+            .orderBy(orderBy)
     },
     methods: {
-        rtdb() {
-            firebase.rtdb.ref(process.env.MIX_FB_COLLECTION_NAME)
-                .orderByChild('timestamp')
-                .startAt(Date.now())
-                .on('child_added', (doc) => {
-                    this.addToNotifList(doc.val())
-                })
-        },
-        fsdb() {
-            this.unsubscribe = firebase.fsdb.collection(process.env.MIX_FB_COLLECTION_NAME)
-                .where('timestamp', '>=', Date.now())
-                .onSnapshot((docs) => {
-                    docs.forEach((doc) => {
-                        this.addToNotifList(doc.data())
-                    })
-                })
+        async manageNotifications(data) {
+            let channel = this.getChannelData(data.channel)
+            let isAuthorized = await this.isAuthorized(channel)
+
+            if (this.isPrivate(channel) && isAuthorized) {
+                data.channel = channel
+
+                return this.addToNotifList(data)
+            } else {
+                // show a public notification
+            }
         },
         addToNotifList(item) {
             let notifs = this.notifications
 
-            notifs.length ? notifs.unshift(item) : notifs.push(item)
+            if (!notifs.includes(item)) {
+                notifs.push(item)
+            }
+        },
+        getChannelData(channel) {
+            let regex = /^\w+-/g
+            let isPrivate = channel.match(regex)
+
+            return {
+                'name': channel,
+                'type': isPrivate ? isPrivate[0].replace('-', '') : 'public'
+            }
+        },
+
+        /* --------------------------------- checks -------------------------------- */
+
+        isPrivate({type}) {
+            return type == 'private'
+        },
+        async isAuthorized({name}) {
+            try {
+                let res = await axios.post(authUrl, {
+                    'channel_name': name
+                }, {
+                    validateStatus: function (status) {
+                        return (status >= 200 && status < 300) || status == 403 // dont show unauthorized error in console
+                    }
+                })
+
+                return res.status == 200 ? true : false
+            } catch (error) {
+                console.clear()
+            }
+        },
+        toOthers({name}) {
+            return !name.includes(this.userId)
+        }
+    },
+    watch: {
+        queue(list) {
+            if (list.length) {
+                let index = list.length - 1
+                let item = list[index]
+                this.manageNotifications(item)
+
+                this.$nextTick(() => {
+                    this.queue.splice(index, 1)
+                })
+            }
         }
     }
 }
