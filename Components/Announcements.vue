@@ -3,7 +3,7 @@
 </template>
 
 <script>
-import db from 'js/db'
+import db from './../db'
 
 const startAt = Date.now()
 const orderBy = 'timestamp'  // dont forget to index it under firebase rules
