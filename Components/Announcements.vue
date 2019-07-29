@@ -88,8 +88,8 @@ export default {
         queue(list) {
             if (list.length) {
                 let index = list.length - 1
-                let item = list[index]
-                this.manageNotifications(item)
+                
+                this.manageNotifications(list[index])
 
                 this.$nextTick(() => {
                     this.queue.splice(index, 1)
