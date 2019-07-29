@@ -2,6 +2,7 @@
 
 namespace ctf0\Firebase\Broadcasters;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Kreait\Firebase\ServiceAccount;
 use Morrislaptop\Firestore\Factory;
@@ -11,6 +12,8 @@ use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 
 class FSDB extends Broadcaster
 {
+    use Common;
+
     protected $db;
     protected $config;
 
@@ -31,35 +34,25 @@ class FSDB extends Broadcaster
     /**
      * {@inheritdoc}
      */
-    public function auth($request)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validAuthenticationResponse($request, $result)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function broadcast(array $channels, $event, array $payload = [])
     {
-        $db = $this->db;
+        $db     = $this->db;
+        $socket = Arr::pull($payload, 'socket');
 
-        try {
-            $coll = $db->collection($this->config['collection_name']);
-            $doc  = $coll->document(md5(Str::uuid()));
-            $doc->set([
-                'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
-                'channels'  => $this->formatChannels($channels),
-                'data'      => $payload,
-                'event'     => $event,
-            ]);
-        } catch (ApiException $e) {
-            throw new BroadcastException($e);
+        foreach ($this->formatChannels($channels) as $channel) {
+            try {
+                $coll = $db->collection($this->config['collection_name']);
+                $doc  = $coll->document(md5(Str::uuid()));
+                $doc->set([
+                    'channel'   => $channel,
+                    'data'      => $payload,
+                    'event'     => $event,
+                    'socket'    => $socket,
+                    'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
+                ]);
+            } catch (ApiException $e) {
+                throw new BroadcastException($e);
+            }
         }
     }
 }

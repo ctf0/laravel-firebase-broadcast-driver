@@ -2,6 +2,7 @@
 
 namespace ctf0\Firebase\Broadcasters;
 
+use Illuminate\Support\Arr;
 use Kreait\Firebase\Factory;
 use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Exception\ApiException;
@@ -10,6 +11,8 @@ use Illuminate\Broadcasting\Broadcasters\Broadcaster;
 
 class RTDB extends Broadcaster
 {
+    use Common;
+
     protected $db;
     protected $config;
 
@@ -31,34 +34,24 @@ class RTDB extends Broadcaster
     /**
      * {@inheritdoc}
      */
-    public function auth($request)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validAuthenticationResponse($request, $result)
-    {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function broadcast(array $channels, $event, array $payload = [])
     {
-        $db = $this->db->getDatabase();
+        $db     = $this->db->getDatabase();
+        $socket = Arr::pull($payload, 'socket');
 
-        try {
-            $db->getReference($this->config['collection_name'])
-                ->push([
-                    'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
-                    'channels'  => $this->formatChannels($channels),
-                    'data'      => $payload,
-                    'event'     => $event,
-                ]);
-        } catch (ApiException $e) {
-            throw new BroadcastException($e);
+        foreach ($this->formatChannels($channels) as $channel) {
+            try {
+                $db->getReference($this->config['collection_name'])
+                    ->push([
+                        'channel'   => $channel,
+                        'data'      => $payload,
+                        'event'     => $event,
+                        'socket'    => $socket,
+                        'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
+                    ]);
+            } catch (ApiException $e) {
+                throw new BroadcastException($e);
+            }
         }
     }
 }

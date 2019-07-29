@@ -17,7 +17,7 @@ class FireBaseBroadcastProvider extends ServiceProvider
         app(BroadcastManager::class)->extend('firebase', function ($app) {
             $config = config('broadcasting.connections.firebase');
 
-            return $config['type'] == 'rtdb' ? new RTDB($config) : new FSDB($config);
+            return $config['type'] == 'database' ? new RTDB($config) : new FSDB($config);
         });
     }
 
