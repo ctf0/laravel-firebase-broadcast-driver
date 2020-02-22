@@ -75,7 +75,7 @@ export default {
                     'channel_name': name
                 })
 
-                return res.status == 200 ? true : false
+                return res.status == 200
             } catch (error) {
                 console.clear()
             }
