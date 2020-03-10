@@ -20,13 +20,11 @@ class FSDB extends Broadcaster
     /**
      * Create a new broadcaster instance.
      */
-    public function __construct()
+    public function __construct($config)
     {
-        $this->config = config('broadcasting.connections.firebase');
-
-        $sr_account = ServiceAccount::fromJsonFile(base_path($this->config['creds_file']));
-
-        $this->db = (new Factory())
+        $sr_account   = ServiceAccount::fromJsonFile(base_path($config['creds_file']));
+        $this->config = $config;
+        $this->db     = (new Factory())
                         ->withServiceAccount($sr_account)
                         ->createFirestore();
     }
