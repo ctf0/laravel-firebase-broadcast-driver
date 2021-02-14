@@ -42,5 +42,11 @@
         "post-package-install": [
             "@php artisan vendor:publish --provider = \"ctf0\\Firebase\\FireBaseBroadcastProvider\""
         ]
-    }
+    },
+    "funding": [
+        {
+            "type": "patreon",
+            "url": "https://www.patreon.com/ctf0"
+        }
+    ]
 }
