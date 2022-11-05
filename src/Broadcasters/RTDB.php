@@ -4,7 +4,6 @@ namespace ctf0\Firebase\Broadcasters;
 
 use Illuminate\Support\Arr;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\ServiceAccount;
 use Kreait\Firebase\Exception\ApiException;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
@@ -25,9 +24,9 @@ class RTDB extends Broadcaster
     public function __construct($config)
     {
         $this->config = $config;
-        $factory    = (new Factory())
-                        ->withServiceAccount(base_path($config['creds_file']))
-                        ->withDatabaseUri($config['databaseURL']);
+        $factory      = (new Factory())
+                            ->withServiceAccount(base_path($config['creds_file']))
+                            ->withDatabaseUri($config['databaseURL']);
 
         $this->db = $factory->createDatabase();
     }
