@@ -23,12 +23,13 @@ class RTDB extends Broadcaster
      */
     public function __construct($config)
     {
-        $sr_account   = ServiceAccount::fromJsonFile(base_path($config['creds_file']));
         $this->config = $config;
-        $this->db     = (new Factory())
-                        ->withServiceAccount($sr_account)
-                        ->withDatabaseUri($config['databaseURL'])
-                        ->create();
+        $factory    = (new \Kreait\Firebase\Factory())
+            ->withServiceAccount(base_path($config['creds_file']))
+        ->withDatabaseUri($config['databaseURL']);
+
+
+        $this->db = $factory->createDatabase();
     }
 
     /**
@@ -36,12 +37,11 @@ class RTDB extends Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
-        $db     = $this->db->getDatabase();
         $socket = Arr::pull($payload, 'socket');
 
         foreach ($this->formatChannels($channels) as $channel) {
             try {
-                $db->getReference($this->config['collection_name'])
+                $this->db->getReference($this->config['collection_name'])
                     ->push([
                         'channel'   => $channel,
                         'data'      => $payload,
