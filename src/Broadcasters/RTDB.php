@@ -14,6 +14,7 @@ class RTDB extends Broadcaster
     use Common;
 
     protected $db;
+    
     protected $config;
 
     /**
@@ -24,10 +25,9 @@ class RTDB extends Broadcaster
     public function __construct($config)
     {
         $this->config = $config;
-        $factory    = (new \Kreait\Firebase\Factory())
-            ->withServiceAccount(base_path($config['creds_file']))
-        ->withDatabaseUri($config['databaseURL']);
-
+        $factory    = (new Factory())
+                        ->withServiceAccount(base_path($config['creds_file']))
+                        ->withDatabaseUri($config['databaseURL']);
 
         $this->db = $factory->createDatabase();
     }
