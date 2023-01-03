@@ -24,11 +24,10 @@ class RTDB extends Broadcaster
     public function __construct($config)
     {
         $this->config = $config;
-        $factory      = (new Factory())
+        $this->db     = (new Factory())
                             ->withServiceAccount(base_path($config['creds_file']))
-                            ->withDatabaseUri($config['databaseURL']);
-
-        $this->db = $factory->createDatabase();
+                            ->withDatabaseUri($config['databaseURL'])
+                            ->createDatabase();
     }
 
     /**
@@ -36,18 +35,18 @@ class RTDB extends Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
+        $db = $this->db->getReference($this->config['collection_name']);
         $socket = Arr::pull($payload, 'socket');
 
         foreach ($this->formatChannels($channels) as $channel) {
             try {
-                $this->db->getReference($this->config['collection_name'])
-                    ->push([
-                        'channel'   => $channel,
-                        'data'      => $payload,
-                        'event'     => $event,
-                        'socket'    => $socket,
-                        'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
-                    ]);
+                $db->push([
+                    'channel'   => $channel,
+                    'data'      => $payload,
+                    'event'     => $event,
+                    'socket'    => $socket,
+                    'timestamp' => round(now()->valueOf()), // return date == to js Date.now()
+                ]);
             } catch (ApiException $e) {
                 throw new BroadcastException($e);
             }

@@ -16,7 +16,7 @@
         }
     ],
     "require": {
-        "illuminate/support": ">=5.5 <9.0",
+        "illuminate/support": ">=5.5 <10.0",
         "kreait/firebase-php": "*"
     },
     "suggest": {
@@ -45,8 +45,8 @@
     },
     "funding": [
         {
-            "type": "patreon",
-            "url": "https://www.patreon.com/ctf0"
+            "type": "github",
+            "url": "https://github.com/sponsors/ctf0"
         }
     ]
 }
