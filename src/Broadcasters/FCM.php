@@ -2,12 +2,12 @@
 
 namespace ctf0\Firebase\Broadcasters;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Exception;
 use Kreait\Firebase\Factory;
-use Kreait\Firebase\Exception\ApiException;
 use Illuminate\Broadcasting\BroadcastException;
 use Illuminate\Broadcasting\Broadcasters\Broadcaster;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
 
 class FCM extends Broadcaster
 {
@@ -32,24 +32,23 @@ class FCM extends Broadcaster
      */
     public function broadcast(array $channels, $event, array $payload = [])
     {
+        $service = (new Factory())->withServiceAccount(base_path($this->config['creds_file']))->createMessaging();
+
         foreach ($this->formatChannels($channels) as $channel) {
             try {
-                $message = new Notification(
-                    $notification->title,
-                    $notification->description,
-                );
-                $res = (new Factory())
-                    ->withServiceAccount($config['creds_file'])
-                    ->withTarget('topic', $channel)
-                    ->withNotification($message),
+                $message = CloudMessage::withTarget('topic', $channel)
+                    ->withNotification(Notification::create(
+                        $payload['title'],
+                        $payload['description'],
+                    ))
                     ->withData([
                         'channel'   => $channel,
-                        'data'      => $payload,
+                        'data'      => $payload['data'],
                         'event'     => $event,
-                        'socket'    => $socket,
                         'timestamp' => round(now()->valueOf()),
                     ]);
-            } catch (ApiException $e) {
+                \Log::info($service->send($message));
+            } catch (Exception $e) {
                 throw new BroadcastException($e);
             }
         }
