@@ -20,7 +20,7 @@ return [
 
         'firebase' => [
             'driver'          => 'firebase',
-            'type'            => 'firestore', // database or firestore
+            'type'            => 'firestore', // database, firestore or messaging
             'databaseURL'     => env('FB_DB_URL'), // the real time database url
             'creds_file'      => env('FB_CREDENTIALS_FILE'), // service account json file
             'collection_name' => env('FB_COLLECTION_NAME'), // ex.notifications
