@@ -47,7 +47,6 @@ class FCM extends Broadcaster
                         'event'     => $event,
                         'timestamp' => round(now()->valueOf()),
                     ]);
-                \Log::info($service->send($message));
             } catch (Exception $e) {
                 throw new BroadcastException($e);
             }
